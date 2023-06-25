@@ -4,4 +4,6 @@ export const colors = {
     primaryButton: "#ffd814",
     secondaryButton: "#ffa41c",
     navBar: "#000000",
+    userName: "#237c92",
+    reviewBox: "#e3e6e6",
 };

@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { fetchBooks } from "../../api/FetchBooks";
+import { fetchBooks } from "../../api/Books/Books";
 import { fetchQuotes } from "../../api/FetchQuotes";
 import { SimpleGrid, Code, Center } from "@chakra-ui/react";
 import BookComponent from "../../components/BookComponent";

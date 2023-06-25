@@ -13,6 +13,7 @@ import React, { Fragment } from "react";
 import { useLocation } from "react-router";
 import { colors } from "../../constants/ColorsConstants";
 import NavBarComponent from "../../components/NavBarComponent";
+import ReviewsComponent from "../../components/ReviewsComponent";
 
 function BookDetailPage() {
     const { state } = useLocation();
@@ -64,6 +65,7 @@ function BookDetailPage() {
                     </Stack>
                 </GridItem>
             </Grid>
+            <ReviewsComponent />
         </Fragment>
     );
 }
