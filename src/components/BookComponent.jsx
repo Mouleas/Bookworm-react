@@ -19,7 +19,7 @@ function BookComponent(props) {
         bookName,
         bookDescription,
         bookLanguage,
-        currentPrice,
+        bookPrice,
         bookImg,
     } = props.book;
 
@@ -61,7 +61,7 @@ function BookComponent(props) {
                             color={colors.cost}
                             fontWeight={"semibold"}
                         >
-                            ${currentPrice}
+                            ${bookPrice}
                         </Text>
                     </Stack>
                 </CardBody>

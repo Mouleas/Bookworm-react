@@ -3,4 +3,5 @@ export const colors = {
     cost: "#a12d30",
     primaryButton: "#ffd814",
     secondaryButton: "#ffa41c",
+    navBar: "#000000",
 };
