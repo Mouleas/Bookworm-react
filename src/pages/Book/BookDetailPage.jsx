@@ -14,10 +14,12 @@ import { useLocation } from "react-router";
 import { colors } from "../../constants/ColorsConstants";
 import NavBarComponent from "../../components/NavBarComponent";
 import ReviewsComponent from "../../components/ReviewsComponent";
+import { postCart } from "../../api/Cart/Cart";
 
 function BookDetailPage() {
     const { state } = useLocation();
     const {
+        bookId,
         bookName,
         bookDescription,
         bookLanguage,
@@ -59,6 +61,9 @@ function BookDetailPage() {
                             width={40}
                             bg={colors.primaryButton}
                             fontWeight={"normal"}
+                            onClick={() => {
+                                postCart(3, bookId, 1);
+                            }}
                         >
                             Add to cart
                         </Button>

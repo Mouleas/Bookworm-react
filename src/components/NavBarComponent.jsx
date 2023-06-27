@@ -30,7 +30,7 @@ function NavBarComponent() {
                     </Link>
                 </Heading>
                 <LinkBox>
-                    <Link _hover={LinkStyle} m={3}>
+                    <Link _hover={LinkStyle} m={3} href="/cart">
                         <Icon as={FaShoppingCart} boxSize={5}></Icon>
                     </Link>
                     <Link _hover={LinkStyle} m={3}>

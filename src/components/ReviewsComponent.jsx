@@ -22,12 +22,12 @@ function ReviewsComponent() {
 
     const bookId = parseInt(useParams().id);
 
-    async function fetchReviewsFromApi() {
-        setReviews((await fetchReviews()).data);
+    async function fetchReviewsFromApi(bookId) {
+        setReviews((await fetchReviews(bookId)).data);
     }
 
     useEffect(() => {
-        fetchReviewsFromApi();
+        fetchReviewsFromApi(bookId);
     }, [reviews]);
 
     return (
@@ -126,7 +126,7 @@ function ReviewsComponent() {
                                                 fontWeight={"bold"}
                                                 color={colors.userName}
                                             >
-                                                {review.userId}{" "}
+                                                {review.user.userName}{" "}
                                             </Text>
                                             <Code color={"black"} fontSize={12}>
                                                 Reviewed on
