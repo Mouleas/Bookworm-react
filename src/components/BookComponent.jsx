@@ -61,7 +61,7 @@ function BookComponent(props) {
                             color={colors.cost}
                             fontWeight={"semibold"}
                         >
-                            ${bookPrice}
+                            ₹{bookPrice}
                         </Text>
                     </Stack>
                 </CardBody>

@@ -8,13 +8,16 @@ import {
     Center,
     Button,
     Divider,
+    Icon,
+    Box,
 } from "@chakra-ui/react";
 import React, { Fragment } from "react";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { colors } from "../../constants/ColorsConstants";
 import NavBarComponent from "../../components/NavBarComponent";
 import ReviewsComponent from "../../components/ReviewsComponent";
 import { postCart } from "../../api/Cart/Cart";
+import { FaHome } from "react-icons/fa";
 
 function BookDetailPage() {
     const { state } = useLocation();
@@ -27,9 +30,28 @@ function BookDetailPage() {
         totalPages,
         bookImg,
     } = state;
+    const navigate = useNavigate();
     return (
         <Fragment>
             <NavBarComponent />
+            <Box
+                bg={"blue.500"}
+                borderRadius={"20%"}
+                w={"fit-content"}
+                p={1}
+                position={"fixed"}
+                bottom={5}
+                right={5}
+                boxShadow={"xl"}
+                zIndex={100}
+                onClick={() => {
+                    navigate("/books");
+                }}
+                _hover={{ cursor: "pointer" }}
+            >
+                <Icon as={FaHome} boxSize={8} color={"white"}></Icon>
+            </Box>
+
             <Grid
                 templateColumns="repeat(4, 1fr)"
                 gap={4}
@@ -54,7 +76,7 @@ function BookDetailPage() {
                             fontWeight={"semibold"}
                             fontSize={30}
                         >
-                            ${bookPrice}
+                            ₹{bookPrice}
                         </Text>
                         <Divider></Divider>
                         <Button

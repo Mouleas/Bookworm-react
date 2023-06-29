@@ -1,9 +1,19 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { fetchBooks } from "../../api/Books/Books";
-import { fetchQuotes } from "../../api/FetchQuotes";
-import { SimpleGrid, Code, Center } from "@chakra-ui/react";
+import { fetchQuotes } from "../../api/Quotes/FetchQuotes";
+import {
+    SimpleGrid,
+    Code,
+    Center,
+    Text,
+    Button,
+    Box,
+    Icon,
+} from "@chakra-ui/react";
 import BookComponent from "../../components/BookComponent";
 import NavBarComponent from "../../components/NavBarComponent";
+import { colors } from "../../constants/ColorsConstants";
+import { FaPlusCircle, FaRecycle } from "react-icons/fa";
 
 function BookListsPage() {
     const [hasBooksFetched, setHasBooksFetched] = useState(false);
@@ -32,6 +42,43 @@ function BookListsPage() {
             <Center mt={3}>
                 <Code children={quotes} mt={3} />
             </Center>
+            <Box
+                position={"fixed"}
+                zIndex={100}
+                bottom={5}
+                right={5}
+                display={"flex"}
+            >
+                <Button
+                    m={2}
+                    bg={colors.primaryButton}
+                    display={{ base: "none", md: "block" }}
+                >
+                    Add new Books
+                </Button>
+                <Button
+                    m={2}
+                    bg={colors.secondaryButton}
+                    display={{ base: "none", md: "block" }}
+                >
+                    Resell Books
+                </Button>
+                <Button
+                    m={2}
+                    bg={"#3CB043"}
+                    display={{ base: "block", md: "none" }}
+                >
+                    <Icon as={FaPlusCircle} boxSize={8} color={"white"}></Icon>
+                </Button>
+                <Button
+                    m={2}
+                    bg={"#FF7518"}
+                    display={{ base: "block", md: "none" }}
+                >
+                    <Icon as={FaRecycle} boxSize={8} color={"white"}></Icon>
+                </Button>
+            </Box>
+
             <SimpleGrid
                 column={4}
                 spacing={10}

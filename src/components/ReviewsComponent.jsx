@@ -23,12 +23,25 @@ function ReviewsComponent() {
     const bookId = parseInt(useParams().id);
 
     async function fetchReviewsFromApi(bookId) {
-        setReviews((await fetchReviews(bookId)).data);
+        let fetchedReviews = (await fetchReviews(bookId)).data;
+        setReviews(fetchedReviews);
     }
+
+    const submitReview = async () => {
+        if (userReview.length == 0) return;
+
+        const response = await postReview(
+            userReview,
+            bookId,
+            3,
+            "" + new Date().toLocaleString()
+        );
+        await fetchReviewsFromApi(bookId);
+    };
 
     useEffect(() => {
         fetchReviewsFromApi(bookId);
-    }, [reviews]);
+    }, []);
 
     return (
         <Fragment>
@@ -80,17 +93,7 @@ function ReviewsComponent() {
                                 border: `solid 1px ${colors.secondaryButton}`,
                                 backgroundColor: "transparent",
                             }}
-                            onClick={() => {
-                                if (userReview.length > 0) {
-                                    postReview(
-                                        userReview,
-                                        bookId,
-                                        3,
-                                        "" + new Date().toLocaleString()
-                                    );
-                                    setUserReview("");
-                                }
-                            }}
+                            onClick={submitReview}
                         >
                             Submit
                         </Button>

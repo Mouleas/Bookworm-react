@@ -12,6 +12,8 @@ import NavBarComponent from "../../components/NavBarComponent";
 import { colors } from "../../constants/ColorsConstants";
 import { fetchCart } from "../../api/Cart/Cart";
 import CartItemComponent from "../../components/CartItemComponent";
+import { useNavigate } from "react-router";
+import { postOrder, postOrderItem } from "../../api/Order/Order";
 
 function getNumberOfItems(cart) {
     let totalItems = 0;
@@ -30,6 +32,8 @@ function estimateTotalPrice(cart) {
 }
 
 function CartPage() {
+    const navigate = useNavigate();
+
     const [cartItems, setCartItems] = useState([]);
     const [itemsFetched, setItemFetched] = useState(false);
 
@@ -41,13 +45,36 @@ function CartPage() {
         if (cartItems.length > 0) {
             setTotalItems(getNumberOfItems(cartItems));
             setTotalCost(estimateTotalPrice(cartItems));
+        } else {
+            setTotalCost(0);
+            setTotalItems(0);
         }
         setItemFetched(true);
     }
 
+    async function postNewOrder(userId, userAddress) {
+        return await postOrder(
+            userId,
+            "" + new Date().toLocaleString(),
+            userAddress,
+            totalItems,
+            totalCost
+        );
+    }
+
+    async function postOrderItems(orderId) {
+        for (var cartItem of cartItems) {
+            await postOrderItem(
+                orderId,
+                cartItem.book.bookId,
+                cartItem.bookQuantity
+            );
+        }
+    }
+
     useEffect(() => {
         fetchCartFromApi(3);
-    }, [itemsFetched]);
+    }, [itemsFetched, totalItems, totalCost]);
 
     return (
         <Fragment>
@@ -91,7 +118,18 @@ function CartPage() {
                     <Text fontWeight={"bold"} mt={3}>
                         INR {totalCost}.00
                     </Text>
-                    <Button bg={colors.primaryButton} mt={3}>
+                    <Button
+                        bg={colors.primaryButton}
+                        mt={3}
+                        onClick={() => {
+                            postNewOrder(3, "user address").then((response) => {
+                                let orderId = response.data.orderId;
+                                postOrderItems(orderId).then(() => {
+                                    navigate(`/books`);
+                                });
+                            });
+                        }}
+                    >
                         Proceed to checkout
                     </Button>
                 </GridItem>

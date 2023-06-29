@@ -6,7 +6,7 @@ export async function fetchReviews(id) {
 }
 
 export async function postReview(review, bookId, userId, dateTime) {
-    axios.post(`${BASE_URL}/ReviewModels`, {
+    return axios.post(`${BASE_URL}/ReviewModels`, {
         userId: userId,
         bookId: bookId,
         review: review,

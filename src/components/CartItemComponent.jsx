@@ -54,14 +54,15 @@ function CartItemComponent(props) {
                         width={5}
                         height={5}
                         onClick={() => {
-                            decrementItem(cartId);
-                            if (bookQty > 1) {
-                                setQuantity((prev) => prev - 1);
-                            } else {
-                                setItemFetched(false);
-                            }
-                            setTotalItems((prev) => prev - 1);
-                            setTotalCost((prev) => prev - book.bookPrice);
+                            decrementItem(cartId).then(() => {
+                                setTotalItems((prev) => prev - 1);
+                                setTotalCost((prev) => prev - book.bookPrice);
+                                if (bookQty > 1) {
+                                    setQuantity((prev) => prev - 1);
+                                } else {
+                                    setItemFetched(false);
+                                }
+                            });
                         }}
                     >
                         -
@@ -71,10 +72,11 @@ function CartItemComponent(props) {
                         width={5}
                         height={5}
                         onClick={() => {
-                            incrementItem(cartId);
-                            setTotalItems((prev) => prev + 1);
-                            setQuantity((prev) => prev + 1);
-                            setTotalCost((prev) => prev + book.bookPrice);
+                            incrementItem(cartId).then(() => {
+                                setTotalItems((prev) => prev + 1);
+                                setQuantity((prev) => prev + 1);
+                                setTotalCost((prev) => prev + book.bookPrice);
+                            });
                         }}
                     >
                         +
@@ -90,9 +92,9 @@ function CartItemComponent(props) {
                         textDecoration: "underline",
                     }}
                     onClick={() => {
-                        deleteCartItem(cartId);
-                        setItemFetched(false);
-                        window.location.reload();
+                        deleteCartItem(cartId).then(() => {
+                            setItemFetched(false);
+                        });
                     }}
                 >
                     Remove

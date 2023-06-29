@@ -1,6 +1,6 @@
 import { Flex, Heading, Icon, Link, LinkBox } from "@chakra-ui/react";
 import React, { Fragment } from "react";
-import { FaShoppingCart, FaUserAlt } from "react-icons/fa";
+import { FaShoppingCart, FaUserAlt, FaBoxOpen } from "react-icons/fa";
 import { colors } from "../constants/ColorsConstants";
 
 function NavBarComponent() {
@@ -30,6 +30,9 @@ function NavBarComponent() {
                     </Link>
                 </Heading>
                 <LinkBox>
+                    <Link _hover={LinkStyle} m={3} href="/orders">
+                        <Icon as={FaBoxOpen} boxSize={5}></Icon>
+                    </Link>
                     <Link _hover={LinkStyle} m={3} href="/cart">
                         <Icon as={FaShoppingCart} boxSize={5}></Icon>
                     </Link>
