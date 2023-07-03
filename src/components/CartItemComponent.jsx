@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { incrementItem, decrementItem, deleteCartItem } from "../api/Cart/Cart";
+import { BOOK_IMAGE_URL } from "../constants/ApiConstants";
 
 function CartItemComponent(props) {
     const { cartId, book, bookQuantity } = props.data;
@@ -23,11 +24,12 @@ function CartItemComponent(props) {
             bg={"blackAlpha.200"}
             p={5}
             mt={3}
+            borderRadius={10}
         >
             <GridItem colSpan={2}>
                 <Center display={"block"} textAlign={"center"}>
                     <Image
-                        src="../../assets/images/book.png"
+                        src={`${BOOK_IMAGE_URL}${book.bookId}${book.bookImg}`}
                         h={{ base: "130px", md: "200px" }}
                         w={{ base: "150px" }}
                     />

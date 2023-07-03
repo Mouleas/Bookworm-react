@@ -6,11 +6,23 @@ import CartPage from "./pages/Cart/CartPage";
 import App from "./App";
 import OrderPage from "./pages/Order/OrderPage";
 import OrderItemsPage from "./pages/Order/OrderItemsPage";
+import PublishBook from "./pages/Publish/PublishBook";
+import SignupPage from "./pages/Auth/SignupPage";
+import LoginPage from "./pages/Auth/LoginPage";
+import UserProfile from "./pages/Profile/UserProfile";
 
 export const routes = createBrowserRouter([
     {
         path: "/",
         element: <App />,
+    },
+    {
+        path: "/login",
+        element: <LoginPage />,
+    },
+    {
+        path: "/signup",
+        element: <SignupPage />,
     },
     {
         path: "/books",
@@ -31,5 +43,13 @@ export const routes = createBrowserRouter([
     {
         path: "/order/:id",
         element: <OrderItemsPage />,
+    },
+    {
+        path: "/new",
+        element: <PublishBook />,
+    },
+    {
+        path: "/profile",
+        element: <UserProfile />,
     },
 ]);

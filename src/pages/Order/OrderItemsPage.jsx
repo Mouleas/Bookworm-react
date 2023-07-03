@@ -29,7 +29,7 @@ function OrderItemsPage() {
     return (
         <Fragment>
             <NavBarComponent />
-            <Box m={5}>
+            <Box mt={20} ml={5} mr={5} mb={5}>
                 <Heading fontSize={25}>Order id: {orderId}</Heading>
             </Box>
             <Divider borderColor={"blackAlpha.400"} />

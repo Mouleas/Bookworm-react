@@ -13,3 +13,7 @@ export async function postReview(review, bookId, userId, dateTime) {
         reviewDateTime: dateTime,
     });
 }
+
+export async function deleteReview(id) {
+    return axios.delete(`${BASE_URL}/ReviewModels/${id}`);
+}

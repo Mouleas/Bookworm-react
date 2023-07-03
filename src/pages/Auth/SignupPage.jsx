@@ -10,43 +10,52 @@ import {
     SimpleGrid,
 } from "@chakra-ui/react";
 import React, { Fragment, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { colors } from "../../constants/ColorsConstants";
-import { authUser } from "../../api/Auth/Login";
-import { setUserData } from "../../secret/userInfo";
+import { useNavigate } from "react-router";
+import { addUser } from "../../api/Auth/Signup";
 
-function LoginPage() {
+function SignupPage() {
     const navigate = useNavigate();
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const [formData, setFormData] = useState({
+        userName: "",
         userEmail: "",
         userPassword: "",
+        userPhone: "",
     });
-    const [errorMessage, setErrorMessage] = useState("");
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
+    const validatePassword = (e) => {
         e.preventDefault();
-        const response = await authUser(formData);
+        return confirmPassword === formData.userPassword ? true : false;
+    };
+
+    async function addNewUser(e) {
+        e.preventDefault();
+        const response = await addUser(formData);
         try {
             if (response.response.data.status === 500) {
                 setErrorMessage(response.response.data.detail);
                 setFormData({
+                    userName: "",
                     userEmail: "",
                     userPassword: "",
+                    userPhone: "",
                 });
+                setConfirmPassword("");
             }
         } catch (e) {
-            setUserData(response.data);
-            navigate("/books");
+            navigate("/login");
         }
-    };
+    }
 
     return (
         <Fragment>
-            <SimpleGrid columns={{ base: 1, lg: 2 }} bg={"#EFFAFC"}>
+            <SimpleGrid columns={{ base: 1, lg: 2 }} bg={"#F5E8DF"}>
                 <Box
                     ml={20}
                     mr={20}
@@ -56,16 +65,27 @@ function LoginPage() {
                     justifyContent={"center"}
                 >
                     <Box w={"container.sm"}>
-                        <Heading mb={5} fontSize={45}>
-                            Sign in
+                        <Heading fontSize={45} mb={5}>
+                            Sign up
                         </Heading>
                         <form>
-                            <FormControl isRequired>
+                            <FormControl isRequired mt={3}>
+                                <FormLabel>User name</FormLabel>
+                                <Input
+                                    type="text"
+                                    borderColor={"black"}
+                                    placeholder="Enter user name"
+                                    value={formData.userName}
+                                    onChange={handleChange}
+                                    name="userName"
+                                />
+                            </FormControl>
+                            <FormControl isRequired mt={3}>
                                 <FormLabel>User email</FormLabel>
                                 <Input
                                     type="email"
-                                    placeholder="Enter email"
                                     borderColor={"black"}
+                                    placeholder="Enter email"
                                     value={formData.userEmail}
                                     onChange={handleChange}
                                     name="userEmail"
@@ -82,11 +102,24 @@ function LoginPage() {
                                     name="userPassword"
                                 />
                             </FormControl>
+                            <FormControl isRequired mt={3}>
+                                <FormLabel>Confirm password</FormLabel>
+                                <Input
+                                    type="password"
+                                    placeholder="Re-type password"
+                                    borderColor={"black"}
+                                    value={confirmPassword}
+                                    onChange={(e) => {
+                                        setConfirmPassword(e.target.value);
+                                    }}
+                                />
+                            </FormControl>
                             {errorMessage && (
                                 <Code bg={"Red"} color={"white"}>
                                     {errorMessage}
                                 </Code>
                             )}
+
                             <Box
                                 display={"flex"}
                                 alignItems={"flex-end"}
@@ -95,9 +128,18 @@ function LoginPage() {
                                 <Button
                                     type="Submit"
                                     bg={colors.primaryButton}
-                                    onClick={handleSubmit}
+                                    onClick={(e) => {
+                                        if (!validatePassword(e)) {
+                                            setErrorMessage(
+                                                "Confirm password ≠ Password"
+                                            );
+                                            setConfirmPassword("");
+                                        } else {
+                                            addNewUser(e);
+                                        }
+                                    }}
                                 >
-                                    Sign in
+                                    Sign up
                                 </Button>
                                 <Code
                                     ml={3}
@@ -106,18 +148,17 @@ function LoginPage() {
                                     textDecoration={"underline"}
                                     _hover={{ cursor: "pointer" }}
                                     onClick={() => {
-                                        navigate("/signup");
+                                        navigate("/login");
                                     }}
                                 >
-                                    New user?
+                                    Already a user?
                                 </Code>
                             </Box>
                         </form>
                     </Box>
                 </Box>
-
                 <Image
-                    src="../../../assets/images/login.jpg"
+                    src="../../../assets/images/signup.jpg"
                     h={"100vh"}
                     display={{ base: "none", lg: "block" }}
                 />
@@ -126,4 +167,4 @@ function LoginPage() {
     );
 }
 
-export default LoginPage;
+export default SignupPage;

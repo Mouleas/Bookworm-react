@@ -14,7 +14,14 @@ function NavBarComponent() {
                 alignItems={"center"}
                 bg={colors.navBar}
                 color={"#fff"}
-                p={2}
+                pt={2}
+                pl={2}
+                pr={5}
+                pb={2}
+                position={"fixed"}
+                w={"100vw"}
+                top={0}
+                zIndex={200}
             >
                 <Heading
                     fontSize={{
@@ -36,7 +43,7 @@ function NavBarComponent() {
                     <Link _hover={LinkStyle} m={3} href="/cart">
                         <Icon as={FaShoppingCart} boxSize={5}></Icon>
                     </Link>
-                    <Link _hover={LinkStyle} m={3}>
+                    <Link _hover={LinkStyle} m={3} href="/profile">
                         <Icon as={FaUserAlt} boxSize={5}></Icon>
                     </Link>
                 </LinkBox>

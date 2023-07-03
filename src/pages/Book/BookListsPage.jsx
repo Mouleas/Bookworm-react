@@ -9,16 +9,20 @@ import {
     Button,
     Box,
     Icon,
+    Grid,
+    Flex,
 } from "@chakra-ui/react";
 import BookComponent from "../../components/BookComponent";
 import NavBarComponent from "../../components/NavBarComponent";
 import { colors } from "../../constants/ColorsConstants";
 import { FaPlusCircle, FaRecycle } from "react-icons/fa";
+import { useNavigate } from "react-router";
 
 function BookListsPage() {
     const [hasBooksFetched, setHasBooksFetched] = useState(false);
     const [books, setBooks] = useState([]);
     const [quotes, setQuotes] = useState("");
+    const navigate = useNavigate();
 
     async function fetchFromApi() {
         setBooks((await fetchBooks()).data);
@@ -39,7 +43,7 @@ function BookListsPage() {
     return (
         <Fragment>
             <NavBarComponent />
-            <Center mt={3}>
+            <Center mt={20}>
                 <Code children={quotes} mt={3} />
             </Center>
             <Box
@@ -53,6 +57,9 @@ function BookListsPage() {
                     m={2}
                     bg={colors.primaryButton}
                     display={{ base: "none", md: "block" }}
+                    onClick={() => {
+                        navigate("/new");
+                    }}
                 >
                     Add new Books
                 </Button>
@@ -67,6 +74,9 @@ function BookListsPage() {
                     m={2}
                     bg={"#3CB043"}
                     display={{ base: "block", md: "none" }}
+                    onClick={() => {
+                        navigate("/new");
+                    }}
                 >
                     <Icon as={FaPlusCircle} boxSize={8} color={"white"}></Icon>
                 </Button>
@@ -79,11 +89,10 @@ function BookListsPage() {
                 </Button>
             </Box>
 
-            <SimpleGrid
-                column={4}
-                spacing={10}
-                minChildWidth={200}
+            <Flex
                 m={{ base: "20px", md: "40px", lg: "50px" }}
+                flexWrap={"wrap"}
+                gap={10}
             >
                 {hasBooksFetched &&
                     books.map((book) => {
@@ -93,7 +102,7 @@ function BookListsPage() {
                             </Fragment>
                         );
                     })}
-            </SimpleGrid>
+            </Flex>
         </Fragment>
     );
 }

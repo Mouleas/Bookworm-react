@@ -12,6 +12,7 @@ import {
 import React from "react";
 import { useNavigate } from "react-router";
 import { colors } from "../constants/ColorsConstants";
+import { BOOK_IMAGE_URL } from "../constants/ApiConstants";
 
 function BookComponent(props) {
     const {
@@ -27,6 +28,7 @@ function BookComponent(props) {
     return (
         <Box
             border="1.5px solid"
+            minWidth={{ base: "90vw", sm: 300, md: 200, lg: 190 }}
             borderRadius={7}
             onClick={() => {
                 navigate(`/book/${bookId}`, { state: props.book });
@@ -41,7 +43,7 @@ function BookComponent(props) {
                 <CardBody>
                     <Center>
                         <Image
-                            src="../../assets/images/book.png"
+                            src={`${BOOK_IMAGE_URL}${bookId}${bookImg}`}
                             h={40}
                             w="100px"
                         />

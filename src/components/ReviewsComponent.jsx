@@ -13,19 +13,41 @@ import {
 import React, { useEffect, useState } from "react";
 import { Fragment } from "react";
 import { colors } from "../constants/ColorsConstants";
-import { fetchReviews, postReview } from "../api/Reviews/Reviews";
+import { fetchReviews, postReview, deleteReview } from "../api/Reviews/Reviews";
 import { useParams } from "react-router";
+import { getUserData } from "../secret/userInfo";
+import { ToastContainer, toast } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 
 function ReviewsComponent() {
     const [reviews, setReviews] = useState([]);
     const [userReview, setUserReview] = useState("");
+    const [user, setUser] = useState({
+        userId: -1,
+    });
 
     const bookId = parseInt(useParams().id);
 
     async function fetchReviewsFromApi(bookId) {
+        let userData = await getUserData();
+        setUser({ userId: userData.userId });
         let fetchedReviews = (await fetchReviews(bookId)).data;
         setReviews(fetchedReviews);
     }
+
+    const popToast = (message) => {
+        toast.success(message, {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+        });
+    };
 
     const submitReview = async () => {
         if (userReview.length == 0) return;
@@ -33,10 +55,12 @@ function ReviewsComponent() {
         const response = await postReview(
             userReview,
             bookId,
-            3,
+            user.userId,
             "" + new Date().toLocaleString()
         );
         await fetchReviewsFromApi(bookId);
+        setUserReview("");
+        popToast("Thank you for the feedback");
     };
 
     useEffect(() => {
@@ -112,7 +136,7 @@ function ReviewsComponent() {
                         </Heading>
                         {reviews.length === 0 && (
                             <Center>
-                                <Text>No reviews...</Text>
+                                <Text mt={10}>No reviews...</Text>
                             </Center>
                         )}
                         {reviews.length > 0 &&
@@ -125,12 +149,49 @@ function ReviewsComponent() {
                                             bg={colors.reviewBox}
                                             borderRadius={5}
                                         >
-                                            <Text
-                                                fontWeight={"bold"}
-                                                color={colors.userName}
+                                            <Box
+                                                display={"flex"}
+                                                justifyContent={"space-between"}
+                                                alignItems={"center"}
                                             >
-                                                {review.user.userName}{" "}
-                                            </Text>
+                                                <Text
+                                                    fontWeight={"bold"}
+                                                    color={colors.userName}
+                                                >
+                                                    {review.user.userName}
+                                                </Text>
+
+                                                {user.userId ===
+                                                    review.user.userId && (
+                                                    <Text
+                                                        color={"white"}
+                                                        fontSize={14}
+                                                        _hover={{
+                                                            cursor: "pointer",
+                                                        }}
+                                                        pl={2}
+                                                        pr={2}
+                                                        backgroundColor={"red"}
+                                                        borderRadius="50%"
+                                                        onClick={() => {
+                                                            deleteReview(
+                                                                review.reviewId
+                                                            ).then(() => {
+                                                                fetchReviewsFromApi(
+                                                                    bookId
+                                                                ).then(() => {
+                                                                    popToast(
+                                                                        "Review deleted successfully"
+                                                                    );
+                                                                });
+                                                            });
+                                                        }}
+                                                    >
+                                                        x
+                                                    </Text>
+                                                )}
+                                            </Box>
+
                                             <Code color={"black"} fontSize={12}>
                                                 Reviewed on
                                                 {" " + review.reviewDateTime}

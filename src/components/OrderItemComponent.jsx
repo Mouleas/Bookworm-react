@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import React, { Fragment } from "react";
 import { colors } from "../constants/ColorsConstants";
+import { BOOK_IMAGE_URL } from "../constants/ApiConstants";
 
 function OrderItemComponent(props) {
     const { item } = props;
@@ -29,7 +30,7 @@ function OrderItemComponent(props) {
                     alignItems={"center"}
                 >
                     <Image
-                        src="../../assets/images/book.png"
+                        src={`${BOOK_IMAGE_URL}${item.book.bookId}${item.book.bookImg}`}
                         h={{ base: "130px", md: "200px" }}
                         w={{ base: "100px", md: "150px" }}
                     />

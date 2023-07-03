@@ -4,23 +4,27 @@ import NavBarComponent from "../../components/NavBarComponent";
 import OrderComponent from "../../components/OrderComponent";
 import { Grid, GridItem, Heading } from "@chakra-ui/react";
 import { fetchOrders } from "../../api/Order/Order";
+import { getUserData } from "../../secret/userInfo";
 
 function OrderPage() {
     const [orders, setOrders] = useState([]);
 
-    async function fetchOrderFromApi(userId) {
-        let response = (await fetchOrders(userId)).data;
+    async function fetchOrderFromApi() {
+        let user = await getUserData();
+        let response = (await fetchOrders(user.userId)).data;
         setOrders(response);
     }
 
     useEffect(() => {
-        fetchOrderFromApi(3);
+        fetchOrderFromApi();
     }, []);
 
     return (
         <Fragment>
             <NavBarComponent />
-            <Heading p={5}>Your orders</Heading>
+            <Heading mt={20} pl={5}>
+                Your orders
+            </Heading>
             <Grid
                 templateColumns="repeat(8, 1fr)"
                 gap={5}
