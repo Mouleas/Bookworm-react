@@ -12,6 +12,7 @@ import {
 import React, { useState } from "react";
 import { incrementItem, decrementItem, deleteCartItem } from "../api/Cart/Cart";
 import { BOOK_IMAGE_URL } from "../constants/ApiConstants";
+import { ToastContainer, toast } from "react-toastify";
 
 function CartItemComponent(props) {
     const { cartId, book, bookQuantity } = props.data;
@@ -27,7 +28,7 @@ function CartItemComponent(props) {
             borderRadius={10}
         >
             <GridItem colSpan={2}>
-                <Center display={"block"} textAlign={"center"}>
+                <Center display={"block"} textAlign={"center"} >
                     <Image
                         src={`${BOOK_IMAGE_URL}${book.bookId}${book.bookImg}`}
                         h={{ base: "130px", md: "200px" }}
@@ -74,17 +75,35 @@ function CartItemComponent(props) {
                         width={5}
                         height={5}
                         onClick={() => {
-                            incrementItem(cartId).then(() => {
-                                setTotalItems((prev) => prev + 1);
-                                setQuantity((prev) => prev + 1);
-                                setTotalCost((prev) => prev + book.bookPrice);
-                            });
+                            if (book.bookQuantity >= bookQty + 1) {
+                                incrementItem(cartId).then(() => {
+                                    setTotalItems((prev) => prev + 1);
+                                    setQuantity((prev) => prev + 1);
+                                    setTotalCost(
+                                        (prev) => prev + book.bookPrice
+                                    );
+                                });
+                            } else {
+                                toast.error("!Limit exceeded", {
+                                    position: "top-center",
+                                    autoClose: 1000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: false,
+                                    draggable: false,
+                                    progress: undefined,
+                                    theme: "light",
+                                });
+                            }
                         }}
                     >
                         +
                     </Button>
                 </HStack>
-                <Text mt={3}>Genre: zzz</Text>
+                <HStack gap={0} mt={3}>
+                    <Text color={"red"}>*</Text>
+                    <Text>{book.bookLanguage}</Text>
+                </HStack>
                 <Text
                     mt={3}
                     color={"#5193a1"}

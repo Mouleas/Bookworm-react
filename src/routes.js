@@ -10,6 +10,7 @@ import PublishBook from "./pages/Publish/PublishBook";
 import SignupPage from "./pages/Auth/SignupPage";
 import LoginPage from "./pages/Auth/LoginPage";
 import UserProfile from "./pages/Profile/UserProfile";
+import ResellBook from "./pages/ResellBook/ResellBook";
 
 export const routes = createBrowserRouter([
     {
@@ -51,5 +52,9 @@ export const routes = createBrowserRouter([
     {
         path: "/profile",
         element: <UserProfile />,
+    },
+    {
+        path: "/resell",
+        element: <ResellBook />,
     },
 ]);

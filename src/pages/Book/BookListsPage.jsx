@@ -67,6 +67,9 @@ function BookListsPage() {
                     m={2}
                     bg={colors.secondaryButton}
                     display={{ base: "none", md: "block" }}
+                    onClick={() => {
+                        navigate("/resell");
+                    }}
                 >
                     Resell Books
                 </Button>
@@ -84,6 +87,9 @@ function BookListsPage() {
                     m={2}
                     bg={"#FF7518"}
                     display={{ base: "block", md: "none" }}
+                    onClick={() => {
+                        navigate("/resell");
+                    }}
                 >
                     <Icon as={FaRecycle} boxSize={8} color={"white"}></Icon>
                 </Button>

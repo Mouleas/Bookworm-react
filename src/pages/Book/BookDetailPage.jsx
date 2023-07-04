@@ -35,8 +35,11 @@ function BookDetailPage() {
         bookPrice,
         totalPages,
         bookImg,
+        bookQuantity,
     } = state;
     const navigate = useNavigate();
+
+    const [addToCartCount, setAddToCartCount] = useState(0);
 
     async function renderPage() {
         let userData = await getUserData();
@@ -110,17 +113,31 @@ function BookDetailPage() {
                                 bg={colors.primaryButton}
                                 fontWeight={"normal"}
                                 onClick={() => {
-                                    postCart(user.userId, bookId, 1);
-                                    toast.success("Book added to cart", {
-                                        position: "bottom-right",
-                                        autoClose: 3000,
-                                        hideProgressBar: false,
-                                        closeOnClick: true,
-                                        pauseOnHover: false,
-                                        draggable: false,
-                                        progress: undefined,
-                                        theme: "light",
-                                    });
+                                    if (addToCartCount + 1 > bookQuantity) {
+                                        toast.error("!Limit exceeded", {
+                                            position: "top-center",
+                                            autoClose: 1000,
+                                            hideProgressBar: false,
+                                            closeOnClick: true,
+                                            pauseOnHover: false,
+                                            draggable: false,
+                                            progress: undefined,
+                                            theme: "light",
+                                        });
+                                    } else {
+                                        postCart(user.userId, bookId, 1);
+                                        setAddToCartCount((prev) => prev + 1);
+                                        toast.success("Book added to cart", {
+                                            position: "bottom-right",
+                                            autoClose: 3000,
+                                            hideProgressBar: false,
+                                            closeOnClick: true,
+                                            pauseOnHover: false,
+                                            draggable: false,
+                                            progress: undefined,
+                                            theme: "light",
+                                        });
+                                    }
                                 }}
                             >
                                 Add to cart

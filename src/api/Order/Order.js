@@ -26,10 +26,28 @@ export async function postOrder(
     });
 }
 
-export async function postOrderItem(orderId, bookId, bookQuantity) {
+export async function postOrderItem(
+    orderId,
+    bookName,
+    bookDescription,
+    bookAuthor,
+    bookLanguage,
+    totalPages,
+    bookQuantity,
+    oldPriceBook,
+    publisherId,
+    previousOwnership
+) {
     return axios.post(`${BASE_URL}/OrderItemsModels`, {
         orderId: orderId,
-        productId: bookId,
-        productQuantity: bookQuantity,
+        bookName: bookName,
+        bookAuthor: bookAuthor,
+        bookDescription: bookDescription,
+        totalPages: totalPages,
+        bookLanguage: bookLanguage,
+        bookQuantity: bookQuantity,
+        bookPrice: oldPriceBook,
+        publisherId: publisherId,
+        previousOwnership: previousOwnership,
     });
 }

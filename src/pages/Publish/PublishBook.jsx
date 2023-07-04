@@ -18,10 +18,13 @@ import { matchSorter } from "match-sorter";
 import { colors } from "../../constants/ColorsConstants";
 import { postBooks } from "../../api/Books/Books";
 import { ToastContainer, toast } from "react-toastify";
+import { getUserData } from "../../secret/userInfo";
 
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router";
 
 function PublishBook() {
+    const navigate = useNavigate();
     const [query, setQuery] = useState("");
     const [suggestions, setSuggestions] = useState([]);
     const [formData, setFormData] = useState({
@@ -54,8 +57,11 @@ function PublishBook() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        let publisherId = (await getUserData()).userId;
         if (formData.bookImg) {
-            postBooks(formData);
+            console.log("Post req" + publisherId);
+            console.log(formData);
+            postBooks(formData, publisherId, 0);
         }
         setFormData({
             bookName: "",
@@ -66,22 +72,12 @@ function PublishBook() {
             bookQuantity: "",
             totalPages: "",
         });
-        toast.success("Adding books successfull", {
-            position: "top-center",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: "light",
-        });
     };
 
     return (
         <Fragment>
             <NavBarComponent />
-            <Heading mt={5} ml={10} mb={2}>
+            <Heading mt={20} ml={10} mb={2}>
                 Add Books
             </Heading>
             <Divider />
@@ -219,6 +215,16 @@ function PublishBook() {
                             type="submit"
                         >
                             Add Books
+                        </Button>
+                        <Button
+                            ml={2}
+                            bg={"red.500"}
+                            color={"white"}
+                            onClick={() => {
+                                navigate("/books");
+                            }}
+                        >
+                            Cancel
                         </Button>
                     </GridItem>
                 </Grid>

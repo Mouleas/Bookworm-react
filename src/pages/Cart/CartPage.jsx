@@ -24,9 +24,11 @@ import { colors } from "../../constants/ColorsConstants";
 import { fetchCart } from "../../api/Cart/Cart";
 import CartItemComponent from "../../components/CartItemComponent";
 import { useNavigate } from "react-router";
+import { updateCount } from "../../api/Books/Books";
 import { postOrder, postOrderItem } from "../../api/Order/Order";
 import { getUserData } from "../../secret/userInfo";
 import { fetchAddress } from "../../api/Address/Address";
+import { updateAccount } from "../../api/Account/Account";
 import { ToastContainer, toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -94,20 +96,37 @@ function CartPage() {
         for (var cartItem of cartItems) {
             await postOrderItem(
                 orderId,
-                cartItem.book.bookId,
-                cartItem.bookQuantity
+                cartItem.book.bookName,
+                cartItem.book.bookDescription,
+                cartItem.book.bookAuthor,
+                cartItem.book.bookLanguage,
+                cartItem.book.totalPages,
+                cartItem.bookQuantity,
+                cartItem.book.bookPrice,
+                cartItem.book.publisherId,
+                cartItem.book.previousOwnership
             );
+            await updateCount(cartItem.book.bookId, cartItem.bookQuantity);
+            let publisherCommision = 0.25 * (cartItem.book.bookPrice * cartItem.bookQuantity);
+            await updateAccount({
+                pid: cartItem.book.publisherId,
+                oid: cartItem.book.previousOwnership,
+                publisherShare: publisherCommision,
+                ownershipShare: cartItem.bookQuantity * cartItem.book.bookPrice,
+            });
         }
     }
 
     async function newOrder(address) {
-        const userData = await getUserData();
-        postNewOrder(userData.userId, address).then((response) => {
-            let orderId = response.data.orderId;
-            postOrderItems(orderId).then(() => {
-                navigate(`/books`);
+        setTimeout(async () => {
+            const userData = await getUserData();
+            postNewOrder(userData.userId, address).then((response) => {
+                let orderId = response.data.orderId;
+                postOrderItems(orderId).then(() => {
+                    navigate(`/books`);
+                });
             });
-        });
+        }, 2000);
     }
 
     useEffect(() => {
@@ -135,7 +154,10 @@ function CartPage() {
                                         border={"0.5px solid"}
                                         p={2}
                                         borderRadius={5}
-                                        _hover={{ bg: "#DCDCDC" }}
+                                        _hover={{
+                                            bg: "#DCDCDC",
+                                            cursor: "pointer",
+                                        }}
                                         onClick={async () => {
                                             await newOrder(address[0]);
                                         }}
@@ -155,7 +177,10 @@ function CartPage() {
                                         border={"0.5px solid"}
                                         p={2}
                                         borderRadius={5}
-                                        _hover={{ bg: "#DCDCDC" }}
+                                        _hover={{
+                                            bg: "#DCDCDC",
+                                            cursor: "pointer",
+                                        }}
                                         onClick={() => {
                                             newOrder(address[1]);
                                         }}
@@ -175,7 +200,10 @@ function CartPage() {
                                         border={"0.5px solid"}
                                         p={2}
                                         borderRadius={5}
-                                        _hover={{ bg: "#DCDCDC" }}
+                                        _hover={{
+                                            bg: "#DCDCDC",
+                                            cursor: "pointer",
+                                        }}
                                         onClick={() => {
                                             newOrder(address[2]);
                                         }}
@@ -189,7 +217,7 @@ function CartPage() {
 
                     <ModalFooter>
                         <Text mr={10} color={"red.400"}>
-                            *click on any address to proceed
+                            *click on a address to proceed
                         </Text>
                         <Button mr={3} onClick={onClose}>
                             Close
