@@ -8,6 +8,7 @@ import {
     Image,
     Input,
     SimpleGrid,
+    Spinner,
 } from "@chakra-ui/react";
 import React, { Fragment, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -22,12 +23,14 @@ function LoginPage() {
         userPassword: "",
     });
     const [errorMessage, setErrorMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
+        setLoading(true);
         e.preventDefault();
         const response = await authUser(formData);
         try {
@@ -42,10 +45,25 @@ function LoginPage() {
             setUserData(response.data);
             navigate("/books");
         }
+        setLoading(false);
     };
 
     return (
         <Fragment>
+            {loading && (
+                <Box
+                    position={"fixed"}
+                    zIndex={300}
+                    h={"100vh"}
+                    w={"100vw"}
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    bg={"white"}
+                >
+                    <Spinner size={"lg"} />
+                </Box>
+            )}
             <SimpleGrid columns={{ base: 1, lg: 2 }} bg={"#EFFAFC"}>
                 <Box
                     ml={20}

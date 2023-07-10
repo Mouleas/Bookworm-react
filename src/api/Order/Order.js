@@ -20,7 +20,7 @@ export async function postOrder(
         orderDuration: dateTime,
         userId: userId,
         userAddress: address,
-        orderStatus: "Pending",
+        orderStatus: "Order successfull",
         numberOfItems: NumberOfItems,
         totalCost: totalCost,
     });
@@ -50,4 +50,10 @@ export async function postOrderItem(
         publisherId: publisherId,
         previousOwnership: previousOwnership,
     });
+}
+
+export async function updateOrderItemQuantity(orderItemsId, quantity) {
+    return axios.put(
+        `${BASE_URL}/OrderItemsModels/${orderItemsId}/${quantity}`
+    );
 }

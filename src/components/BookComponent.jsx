@@ -8,11 +8,15 @@ import {
     Stack,
     Heading,
     Divider,
+    Code,
+    HStack,
+    Icon,
 } from "@chakra-ui/react";
 import React from "react";
 import { useNavigate } from "react-router";
 import { colors } from "../constants/ColorsConstants";
 import { BOOK_IMAGE_URL } from "../constants/ApiConstants";
+import { FaRetweet } from "react-icons/fa";
 
 function BookComponent(props) {
     const {
@@ -22,6 +26,7 @@ function BookComponent(props) {
         bookLanguage,
         bookPrice,
         bookImg,
+        previousOwnership,
     } = props.book;
 
     const navigate = useNavigate();
@@ -50,9 +55,15 @@ function BookComponent(props) {
                     </Center>
                     <Divider></Divider>
                     <Stack mt={3} spacing={3}>
-                        <Heading fontSize={20}>{bookName}</Heading>
+                        <HStack>
+                            <Heading fontSize={20}>{bookName}</Heading>
+                            {previousOwnership !== 0 && (
+                                <Icon as={FaRetweet} color={"red"} />
+                            )}
+                        </HStack>
+
                         <Text fontSize={10} as={"div"} color={colors.paragraph}>
-                            {bookDescription.substring(0, 40)}...
+                            {bookDescription.substring(0, 25)}...
                             <Text color={"red"} as={"span"}>
                                 ({bookLanguage})
                             </Text>

@@ -37,7 +37,7 @@ function OrderItemsPage() {
                 {orderItems.map((orderItem, index) => {
                     return (
                         <Fragment key={index}>
-                            <OrderItemComponent item={orderItem} />
+                            <OrderItemComponent item={orderItem} refreshOrders={fetchOrderItemsFromApi}/>
                         </Fragment>
                     );
                 })}

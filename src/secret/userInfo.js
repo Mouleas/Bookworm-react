@@ -42,6 +42,7 @@ export async function getUserData() {
         );
         return JSON.parse(decryptedData.toString(CryptoJS.enc.Utf8));
     }
+    return 0;
 }
 
 export async function deleteUserData() {

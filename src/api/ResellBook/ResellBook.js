@@ -19,6 +19,5 @@ export async function getAllResellableBooks(userId) {
             allResellableBooks.push(orderItem);
         }
     }
-    console.log(allResellableBooks);
     return allResellableBooks;
 }

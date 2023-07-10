@@ -15,8 +15,8 @@ import {
     ModalCloseButton,
     useDisclosure,
     Stack,
-    useRadioGroup,
     Code,
+    Spinner,
 } from "@chakra-ui/react";
 import React, { Fragment, useEffect, useState } from "react";
 import NavBarComponent from "../../components/NavBarComponent";
@@ -24,7 +24,7 @@ import { colors } from "../../constants/ColorsConstants";
 import { fetchCart } from "../../api/Cart/Cart";
 import CartItemComponent from "../../components/CartItemComponent";
 import { useNavigate } from "react-router";
-import { updateCount } from "../../api/Books/Books";
+import { updateCount, deleteBook } from "../../api/Books/Books";
 import { postOrder, postOrderItem } from "../../api/Order/Order";
 import { getUserData } from "../../secret/userInfo";
 import { fetchAddress } from "../../api/Address/Address";
@@ -61,6 +61,8 @@ function CartPage() {
 
     const [address, setAddress] = useState([]);
 
+    const [loading, setLoading] = useState(false);
+
     async function fetchAddressFromAPI(userId) {
         var response = await fetchAddress(userId);
         let tmpAddress = [];
@@ -94,6 +96,12 @@ function CartPage() {
 
     async function postOrderItems(orderId) {
         for (var cartItem of cartItems) {
+            if (cartItem.book.bookQuantity - cartItem.bookQuantity <= 0) {
+                await deleteBook(cartItem.book.bookId);
+            } else {
+                await updateCount(cartItem.book.bookId, cartItem.bookQuantity);
+            }
+
             await postOrderItem(
                 orderId,
                 cartItem.book.bookName,
@@ -106,8 +114,9 @@ function CartPage() {
                 cartItem.book.publisherId,
                 cartItem.book.previousOwnership
             );
-            await updateCount(cartItem.book.bookId, cartItem.bookQuantity);
-            let publisherCommision = 0.25 * (cartItem.book.bookPrice * cartItem.bookQuantity);
+
+            let publisherCommision =
+                0.25 * (cartItem.book.bookPrice * cartItem.bookQuantity);
             await updateAccount({
                 pid: cartItem.book.publisherId,
                 oid: cartItem.book.previousOwnership,
@@ -117,16 +126,38 @@ function CartPage() {
         }
     }
 
+    function isValidOrder() {
+        for (var item of cartItems) {
+            if (item.book.bookQuantity < item.bookQuantity) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     async function newOrder(address) {
-        setTimeout(async () => {
+        if (!isValidOrder()) {
+            toast.error("Some items in your cart are out of stock", {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "light",
+            });
+        } else {
+            setLoading(true);
             const userData = await getUserData();
             postNewOrder(userData.userId, address).then((response) => {
                 let orderId = response.data.orderId;
                 postOrderItems(orderId).then(() => {
+                    setLoading(false);
                     navigate(`/books`);
                 });
             });
-        }, 2000);
+        }
     }
 
     useEffect(() => {
@@ -136,6 +167,20 @@ function CartPage() {
     return (
         <Fragment>
             <NavBarComponent />
+            {loading && (
+                <Box
+                    position={"fixed"}
+                    zIndex={300}
+                    h={"100vh"}
+                    w={"100vw"}
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    bg={"white"}
+                >
+                    <Spinner size={"lg"} />
+                </Box>
+            )}
             <ToastContainer />
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
@@ -245,6 +290,10 @@ function CartPage() {
                                 <Fragment key={index}>
                                     <CartItemComponent
                                         data={cartItem}
+                                        outOfStock={
+                                            cartItem.book.bookQuantity <
+                                            cartItem.bookQuantity
+                                        }
                                         setItemFetched={setItemFetched}
                                         setTotalItems={setTotalItems}
                                         setTotalCost={setTotalCost}
@@ -269,7 +318,7 @@ function CartPage() {
                         Subtotal ({totalItems}) item:{" "}
                     </Text>
                     <Text fontWeight={"bold"} mt={3}>
-                        INR {totalCost}.00
+                        INR {totalCost}
                     </Text>
                     <Button
                         bg={colors.primaryButton}

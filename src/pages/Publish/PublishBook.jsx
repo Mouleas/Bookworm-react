@@ -61,7 +61,7 @@ function PublishBook() {
         if (formData.bookImg) {
             console.log("Post req" + publisherId);
             console.log(formData);
-            postBooks(formData, publisherId, 0);
+            await postBooks(formData, publisherId, 0);
         }
         setFormData({
             bookName: "",
@@ -72,6 +72,7 @@ function PublishBook() {
             bookQuantity: "",
             totalPages: "",
         });
+        navigate("/books");
     };
 
     return (
@@ -169,7 +170,7 @@ function PublishBook() {
 
                     <GridItem colSpan={{ base: 2, md: 1 }}>
                         <FormControl isRequired mt={4}>
-                            <FormLabel>Book price</FormLabel>
+                            <FormLabel>Book price (INR)</FormLabel>
                             <Input
                                 type="number"
                                 name="bookPrice"

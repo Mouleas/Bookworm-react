@@ -8,6 +8,7 @@ import {
     Image,
     Input,
     SimpleGrid,
+    Spinner,
 } from "@chakra-ui/react";
 import React, { Fragment, useState } from "react";
 import { colors } from "../../constants/ColorsConstants";
@@ -24,6 +25,7 @@ function SignupPage() {
         userPassword: "",
         userPhone: "",
     });
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -36,6 +38,7 @@ function SignupPage() {
 
     async function addNewUser(e) {
         e.preventDefault();
+        setLoading(true);
         const response = await addUser(formData);
         try {
             if (response.response.data.status === 500) {
@@ -51,10 +54,25 @@ function SignupPage() {
         } catch (e) {
             navigate("/login");
         }
+        setLoading(false);
     }
 
     return (
         <Fragment>
+            {loading && (
+                <Box
+                    position={"fixed"}
+                    zIndex={300}
+                    h={"100vh"}
+                    w={"100vw"}
+                    display={"flex"}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    bg={"white"}
+                >
+                    <Spinner size={"lg"} />
+                </Box>
+            )}
             <SimpleGrid columns={{ base: 1, lg: 2 }} bg={"#F5E8DF"}>
                 <Box
                     ml={20}

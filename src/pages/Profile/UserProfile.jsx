@@ -176,7 +176,7 @@ function UserProfile() {
                         >
                             Your earnings:{" "}
                             {formData.userAccount
-                                ? "₹" + formData.userAccount + ".00"
+                                ? "₹" + formData.userAccount
                                 : "₹0.00"}
                         </Code>
                     </GridItem>

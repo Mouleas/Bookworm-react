@@ -53,3 +53,11 @@ export async function postReselledBooks(
         },
     });
 }
+
+export async function deleteBook(bookId) {
+    return axios.delete(`${BASE_URL}/BookModels/${bookId}`);
+}
+
+export async function updateBookDetails(bookId, bookData) {
+    return axios.put(`${BASE_URL}/BookModels/${bookId}`, bookData);
+}

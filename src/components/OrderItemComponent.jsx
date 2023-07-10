@@ -12,7 +12,7 @@ import { colors } from "../constants/ColorsConstants";
 import ResellBookComponent from "./ResellBookComponent";
 
 function OrderItemComponent(props) {
-    const { item } = props;
+    const { item, refreshOrders } = props;
     const [openModal, setOpenModal] = useState(false);
 
     return (
@@ -46,7 +46,7 @@ function OrderItemComponent(props) {
                             color={colors.cost}
                             as={"cite"}
                         >
-                            Bought each: ₹{item.bookPrice}.00
+                            Bought each: ₹{item.bookPrice}
                         </Text>
                         <Code border={"1px solid green"} color={"green"} mt={2}>
                             Limit for reselling: {item.bookQuantity}
@@ -67,6 +67,7 @@ function OrderItemComponent(props) {
                 isOpen={openModal}
                 isClose={() => setOpenModal(false)}
                 item={item}
+                refreshOrders={refreshOrders}
             />
         </Fragment>
     );

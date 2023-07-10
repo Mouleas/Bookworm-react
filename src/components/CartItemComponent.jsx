@@ -16,8 +16,15 @@ import { ToastContainer, toast } from "react-toastify";
 
 function CartItemComponent(props) {
     const { cartId, book, bookQuantity } = props.data;
-    const { setItemFetched, setTotalItems, setTotalCost } = props;
+    const {
+        setItemFetched,
+        setTotalItems,
+        setTotalCost,
+        validOrder,
+        outOfStock,
+    } = props;
     const [bookQty, setQuantity] = useState(bookQuantity);
+
     return (
         <Grid
             templateColumns="repeat(6, 1fr)"
@@ -28,7 +35,7 @@ function CartItemComponent(props) {
             borderRadius={10}
         >
             <GridItem colSpan={2}>
-                <Center display={"block"} textAlign={"center"} >
+                <Center display={"block"} textAlign={"center"}>
                     <Image
                         src={`${BOOK_IMAGE_URL}${book.bookId}${book.bookImg}`}
                         h={{ base: "130px", md: "200px" }}
@@ -48,9 +55,16 @@ function CartItemComponent(props) {
                 <Heading fontSize={{ base: 20, md: 25 }}>
                     {book.bookName}
                 </Heading>
-                <Code color={"green"} mt={3} border={"1px solid green"}>
-                    In Stock
-                </Code>
+                {!outOfStock && (
+                    <Code color={"green"} mt={3} border={"1px solid green"}>
+                        In stock
+                    </Code>
+                )}
+                {outOfStock && (
+                    <Code color={"red"} mt={3} border={"1px solid red"}>
+                        Out of stock
+                    </Code>
+                )}
                 <HStack mt={3}>
                     <Text>Qty:</Text>
                     <Button
@@ -72,6 +86,7 @@ function CartItemComponent(props) {
                     </Button>
                     <Text>{bookQty}</Text>
                     <Button
+                        isDisabled={outOfStock}
                         width={5}
                         height={5}
                         onClick={() => {
@@ -127,9 +142,7 @@ function CartItemComponent(props) {
                 mt={3}
                 display={{ base: "none", md: "block", lg: "block" }}
             >
-                <Heading fontSize={20}>
-                    INR {bookQty * book.bookPrice}.00
-                </Heading>
+                <Heading fontSize={20}>INR {bookQty * book.bookPrice}</Heading>
             </GridItem>
         </Grid>
     );
