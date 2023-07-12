@@ -16,7 +16,7 @@ import { colors } from "../constants/ColorsConstants";
 import { fetchReviews, postReview, deleteReview } from "../api/Reviews/Reviews";
 import { useParams } from "react-router";
 import { getUserData } from "../secret/userInfo";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -33,7 +33,7 @@ function ReviewsComponent() {
         let userData = await getUserData();
         setUser({ userId: userData.userId });
         let fetchedReviews = (await fetchReviews(bookId)).data;
-        setReviews(fetchedReviews);
+        setReviews(fetchedReviews.reverse());
     }
 
     const popToast = (message) => {
@@ -50,9 +50,9 @@ function ReviewsComponent() {
     };
 
     const submitReview = async () => {
-        if (userReview.length == 0) return;
+        if (userReview.length === 0) return;
 
-        const response = await postReview(
+        await postReview(
             userReview,
             bookId,
             user.userId,

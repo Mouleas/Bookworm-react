@@ -52,6 +52,26 @@ export async function postOrderItem(
     });
 }
 
+export async function insertOrderItems(orderId, cartItems) {
+    var orderItems = [];
+    for (var cartItem of cartItems) {
+        const orderItem = {
+            orderId: orderId,
+            bookName: cartItem.book.bookName,
+            bookAuthor: cartItem.book.bookAuthor,
+            bookDescription: cartItem.book.bookDescription,
+            totalPages: cartItem.book.totalPages,
+            bookLanguage: cartItem.book.bookLanguage,
+            bookQuantity: cartItem.bookQuantity,
+            bookPrice: cartItem.book.bookPrice,
+            publisherId: cartItem.book.publisherId,
+            previousOwnership: cartItem.book.previousOwnership,
+        };
+        orderItems.push(orderItem);
+    }
+    return axios.post(`${BASE_URL}/OrderItemsModels/orderItems`, orderItems);
+}
+
 export async function updateOrderItemQuantity(orderItemsId, quantity) {
     return axios.put(
         `${BASE_URL}/OrderItemsModels/${orderItemsId}/${quantity}`

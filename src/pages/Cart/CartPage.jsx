@@ -25,11 +25,16 @@ import { fetchCart } from "../../api/Cart/Cart";
 import CartItemComponent from "../../components/CartItemComponent";
 import { useNavigate } from "react-router";
 import { updateCount, deleteBook } from "../../api/Books/Books";
-import { postOrder, postOrderItem } from "../../api/Order/Order";
+import {
+    insertOrderItems,
+    postOrder,
+    postOrderItem,
+} from "../../api/Order/Order";
 import { getUserData } from "../../secret/userInfo";
 import { fetchAddress } from "../../api/Address/Address";
 import { updateAccount } from "../../api/Account/Account";
 import { ToastContainer, toast } from "react-toastify";
+import { RAZOR_KEY } from "../../constants/Payment";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -102,18 +107,18 @@ function CartPage() {
                 await updateCount(cartItem.book.bookId, cartItem.bookQuantity);
             }
 
-            await postOrderItem(
-                orderId,
-                cartItem.book.bookName,
-                cartItem.book.bookDescription,
-                cartItem.book.bookAuthor,
-                cartItem.book.bookLanguage,
-                cartItem.book.totalPages,
-                cartItem.bookQuantity,
-                cartItem.book.bookPrice,
-                cartItem.book.publisherId,
-                cartItem.book.previousOwnership
-            );
+            // await postOrderItem(
+            //     orderId,
+            //     cartItem.book.bookName,
+            //     cartItem.book.bookDescription,
+            //     cartItem.book.bookAuthor,
+            //     cartItem.book.bookLanguage,
+            //     cartItem.book.totalPages,
+            //     cartItem.bookQuantity,
+            //     cartItem.book.bookPrice,
+            //     cartItem.book.publisherId,
+            //     cartItem.book.previousOwnership
+            // );
 
             let publisherCommision =
                 0.25 * (cartItem.book.bookPrice * cartItem.bookQuantity);
@@ -124,6 +129,7 @@ function CartPage() {
                 ownershipShare: cartItem.bookQuantity * cartItem.book.bookPrice,
             });
         }
+        await insertOrderItems(orderId, cartItems);
     }
 
     function isValidOrder() {
@@ -133,6 +139,54 @@ function CartPage() {
             }
         }
         return true;
+    }
+
+    function loadScript(src) {
+        return new Promise((resolve) => {
+            const script = document.createElement("script");
+            script.src = src;
+            script.onload = () => {
+                resolve(true);
+            };
+            script.onerror = () => {
+                resolve(false);
+            };
+            document.body.appendChild(script);
+        });
+    }
+
+    async function onPaymentRequest(address) {
+        const res = await loadScript(
+            "https://checkout.razorpay.com/v1/checkout.js"
+        );
+        if (!res) {
+            alert("Razorpay SDK failed to load. Are you online?");
+            return;
+        }
+
+        try {
+            const options = {
+                key: RAZOR_KEY,
+                amount: totalCost * 100,
+                currency: "INR",
+                name: "Bookworm",
+                description: "Transaction",
+                prefill: {
+                    contact: "+919900000000",
+                },
+                handler: async function (res) {
+                    await newOrder(address);
+                },
+            };
+            const paymentObject = new window.Razorpay(options);
+            paymentObject.open();
+        } catch (error) {
+            if (error.response) {
+                alert(error.response.data);
+            } else {
+                console.log("Non-Axios Error:", error);
+            }
+        }
     }
 
     async function newOrder(address) {
@@ -204,7 +258,7 @@ function CartPage() {
                                             cursor: "pointer",
                                         }}
                                         onClick={async () => {
-                                            await newOrder(address[0]);
+                                            await onPaymentRequest(address[0]);
                                         }}
                                     >
                                         {address[0]}
@@ -226,8 +280,8 @@ function CartPage() {
                                             bg: "#DCDCDC",
                                             cursor: "pointer",
                                         }}
-                                        onClick={() => {
-                                            newOrder(address[1]);
+                                        onClick={async () => {
+                                            await onPaymentRequest(address[1]);
                                         }}
                                     >
                                         {address[1]}
@@ -249,8 +303,8 @@ function CartPage() {
                                             bg: "#DCDCDC",
                                             cursor: "pointer",
                                         }}
-                                        onClick={() => {
-                                            newOrder(address[2]);
+                                        onClick={async () => {
+                                            await onPaymentRequest(address[2]);
                                         }}
                                     >
                                         {address[2]}

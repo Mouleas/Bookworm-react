@@ -56,7 +56,6 @@ function UserProfile() {
 
     async function fetchAddressFromAPI(userId) {
         var response = await fetchAddress(userId);
-        console.log(response);
         setAddress(response.data);
     }
 
@@ -93,7 +92,7 @@ function UserProfile() {
     function logout() {
         toast.error("Logging you out", {
             position: "top-center",
-            autoClose: 3000,
+            autoClose: 1000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: false,
@@ -104,7 +103,7 @@ function UserProfile() {
         setTimeout(() => {
             deleteUserData();
             navigate("/login");
-        }, 3500);
+        }, 1500);
     }
 
     useEffect(() => {

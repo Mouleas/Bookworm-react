@@ -17,6 +17,7 @@ import { useNavigate } from "react-router";
 import { colors } from "../constants/ColorsConstants";
 import { BOOK_IMAGE_URL } from "../constants/ApiConstants";
 import { FaRetweet } from "react-icons/fa";
+import { deleteBook } from "../api/Books/Books";
 
 function BookComponent(props) {
     const {
@@ -35,9 +36,7 @@ function BookComponent(props) {
             border="1.5px solid"
             minWidth={{ base: "90vw", sm: 300, md: 200, lg: 190 }}
             borderRadius={7}
-            onClick={() => {
-                navigate(`/book/${bookId}`, { state: props.book });
-            }}
+            maxWidth={"450px"}
             _hover={{
                 border: "1.5px solid red",
                 cursor: "pointer",
@@ -45,7 +44,11 @@ function BookComponent(props) {
             boxShadow="2xl"
         >
             <Card>
-                <CardBody>
+                <CardBody
+                    onClick={() => {
+                        navigate(`/book/${bookId}`, { state: props.book });
+                    }}
+                >
                     <Center>
                         <Image
                             src={`${BOOK_IMAGE_URL}${bookId}${bookImg}`}
@@ -78,6 +81,20 @@ function BookComponent(props) {
                         </Text>
                     </Stack>
                 </CardBody>
+                <Code
+                    display={props.isAdmin === true ? "block" : "none"}
+                    p={2}
+                    w={"full"}
+                    textAlign={"center"}
+                    bg={"red.500"}
+                    color={"white"}
+                    onClick={async () => {
+                        await deleteBook(bookId);
+                        props.renderPage();
+                    }}
+                >
+                    Delete
+                </Code>
             </Card>
         </Box>
     );

@@ -2,14 +2,12 @@ import React, { Fragment, useEffect, useState } from "react";
 import { fetchBooks } from "../../api/Books/Books";
 import { fetchQuotes } from "../../api/Quotes/FetchQuotes";
 import {
-    SimpleGrid,
     Code,
     Center,
     Text,
     Button,
     Box,
     Icon,
-    Grid,
     Flex,
     Spinner,
     useDisclosure,
@@ -32,6 +30,7 @@ import { colors } from "../../constants/ColorsConstants";
 import { FaPlusCircle, FaRecycle } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { FaFilter } from "react-icons/fa";
+import { getUserData } from "../../secret/userInfo";
 
 function BookListsPage() {
     const [hasBooksFetched, setHasBooksFetched] = useState(false);
@@ -42,6 +41,7 @@ function BookListsPage() {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [priceFilter, setPriceFilter] = useState(0);
     const [bookType, setBookType] = useState(0);
+    const [isAdmin, setAdmin] = useState(false);
 
     const [filterData, setFilterData] = useState({
         bookName: "",
@@ -131,6 +131,9 @@ function BookListsPage() {
         setLoading(true);
         await fetchFromApi();
         await fetchQuotesFromApi();
+        let user = await getUserData();
+        console.log(user.userEmail === "admin@gmail.com");
+        setAdmin(user.userEmail === "admin@gmail.com");
         setLoading(false);
     }
 
@@ -159,6 +162,7 @@ function BookListsPage() {
             <Box
                 position={"fixed"}
                 ml={5}
+                mt={10}
                 bg={"black"}
                 p={2}
                 display={"flex"}
@@ -401,7 +405,11 @@ function BookListsPage() {
                     books.map((book) => {
                         return (
                             <Fragment key={book.bookId}>
-                                <BookComponent book={book}></BookComponent>
+                                <BookComponent
+                                    book={book}
+                                    renderPage={() => renderPage()}
+                                    isAdmin={isAdmin}
+                                ></BookComponent>
                             </Fragment>
                         );
                     })}
